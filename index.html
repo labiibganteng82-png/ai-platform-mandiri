@@ -110,8 +110,8 @@
 </div>
 
 <script>
-    // URL BACKEND COLAB TERBARU
-    const BACKEND_URL = "https://disown-aqua-siberian.ngrok-free.dev"
+    // URL BACKEND NGROK TERBARU
+    const BACKEND_URL = "https://disown-aqua-siberian.ngrok-free.dev";
 
     async function sendMessage() {
         const input = document.getElementById("userInput");
@@ -135,9 +135,9 @@
             const response = await fetch(`${BACKEND_URL}/api/generate`, {
                 method: "POST",
                 headers: { 
-    "Content-Type": "application/json",
-    "ngrok-skip-browser-warning": "true"
-}
+                    "Content-Type": "application/json",
+                    "ngrok-skip-browser-warning": "true"
+                },
                 body: JSON.stringify({
                     model: "llama3",
                     prompt: text,
