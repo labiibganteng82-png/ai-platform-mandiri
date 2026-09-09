@@ -108,14 +108,13 @@
 <div class="chat-box">
     <h2>🚀 GHOF AI</h2>
     
-    <!-- Kolom API Key Aman -->
     <div class="api-config">
-        <input type="password" id="apiKeyInput" placeholder="Masukkan Groq API Key (gsk_...)" onchange="saveKey()">
+        <input type="password" id="apiKeyInput" placeholder="Masukkan Groq API Key (gsk_...)">
         <button onclick="saveKey()" style="padding: 8px 12px; font-size: 0.8rem;">Simpan Kunci</button>
     </div>
 
     <div class="messages" id="messages">
-        <div class="message bot">Halo! Saya <b>GHOF AI</b>. Masukkan API Key Groq di atas sekali saja, lalu mulailah mengobrol!</div>
+        <div class="message bot">Halo! Saya <b>GHOF AI</b>. Masukkan Groq API Key di atas lalu klik Simpan Kunci!</div>
     </div>
     <div class="input-area">
         <input type="text" id="userInput" placeholder="Ketik pesan untuk GHOF AI..." onkeypress="if(event.key === 'Enter') sendMessage()">
@@ -124,7 +123,6 @@
 </div>
 
 <script>
-    // Ambil Kunci dari Memori HP jika pernah disimpan
     window.onload = function() {
         const savedKey = localStorage.getItem("GROQ_KEY");
         if (savedKey) {
@@ -136,7 +134,9 @@
         const key = document.getElementById("apiKeyInput").value.trim();
         if (key) {
             localStorage.setItem("GROQ_KEY", key);
-            alert("API Key berhasil disimpan di HP Anda!");
+            alert("API Key berhasil disimpan di browser HP!");
+        } else {
+            alert("Harap masukkan API Key sebelum menyimpan.");
         }
     }
 
@@ -147,7 +147,7 @@
         const text = input.value.trim();
 
         if (!apiKey) {
-            alert("Harap masukkan Groq API Key terlebih dahulu di kolom atas!");
+            alert("Harap masukkan dan simpan Groq API Key terlebih dahulu!");
             return;
         }
         if (!text) return;
@@ -170,22 +170,25 @@
                     "Authorization": `Bearer ${apiKey}`
                 },
                 body: JSON.stringify({
-                    model: "llama-3.3-70b-versatile",
+                    model: "llama-3.1-8b-instant",
                     messages: [
-                        { role: "system", content: "Nama kamu adalah GHOF AI, asisten AI mandiri yang ramah dan cerdas." },
+                        { role: "system", content: "Kamu adalah GHOF AI, asisten virtual buatan Ghof yang ramah dan cerdas." },
                         { role: "user", content: text }
                     ]
                 })
             });
 
             const data = await response.json();
-            if (data.choices && data.choices.length > 0) {
+            
+            if (response.ok && data.choices && data.choices.length > 0) {
                 loadingDiv.innerText = data.choices[0].message.content;
+            } else if (data.error) {
+                loadingDiv.innerText = `Error dari Groq: ${data.error.message}`;
             } else {
-                loadingDiv.innerText = "Error: API Key tidak valid atau terjadi masalah jaringan.";
+                loadingDiv.innerText = "Terjadi kesalahan tidak diketahui.";
             }
         } catch (error) {
-            loadingDiv.innerText = "Gagal terhubung ke Groq API.";
+            loadingDiv.innerText = "Gagal terhubung ke jaringan Groq. Periksa koneksi internet.";
             console.error(error);
         }
         messagesDiv.scrollTop = messagesDiv.scrollHeight;
